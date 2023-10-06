@@ -41,11 +41,7 @@ docker compose up node1 -d
 🕵️ **Verify**: Monitor logs and look for status indicators like:
 
 ```plaintext
-<<<<<<< HEAD
 Synchronized with group, ready for connections
-=======
-WSREP: wsrep_notify_cmd is not defined, skipping notification.
->>>>>>> 82d6e47c87842ef21eac0c1aa09aedd0ca187a97
 ```
 
 #### Step 2: Launch Node 2
