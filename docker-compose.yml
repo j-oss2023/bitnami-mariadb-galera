@@ -1,0 +1,51 @@
+version: '2.1'
+services:
+  node1:
+    image: 'bitnami/mariadb-galera:latest'
+    # ports:
+    #   - '3306'
+    #   - '4444'
+    #   - '4567'
+    #   - '4568'
+    volumes:
+      # chown 1001:1001 ./node1
+      - './node1:/bitnami/mariadb'
+    environment:
+      - MARIADB_GALERA_CLUSTER_NAME=grafana_ha
+      - MARIADB_GALERA_MARIABACKUP_USER=mariabackup
+      - MARIADB_GALERA_MARIABACKUP_PASSWORD=backup123
+      - MARIADB_ROOT_PASSWORD=root123
+      - MARIADB_GALERA_CLUSTER_BOOTSTRAP=yes
+      - MARIADB_USER=grafana
+      - MARIADB_PASSWORD=grafana123
+      - MARIADB_DATABASE=grafana
+      - MARIADB_REPLICATION_USER=mariareplication
+      - MARIADB_REPLICATION_PASSWORD=replication123
+    healthcheck:
+      test: ['CMD', '/opt/bitnami/scripts/mariadb-galera/healthcheck.sh']
+      interval: 15s
+      timeout: 5s
+      retries: 6
+  node2:
+    image: 'bitnami/mariadb-galera:latest'
+    # ports:
+    #   - '3306'
+    #   - '4444'
+    #   - '4567'
+    #   - '4568'
+    volumes:
+      # chown 1001:1001 ./node2
+      - './node2:/bitnami/mariadb'
+    environment:
+        - MARIADB_GALERA_CLUSTER_NAME=grafana_ha
+        - 'MARIADB_GALERA_CLUSTER_ADDRESS=gcomm://node1:4567,0.0.0.0:4567'
+        - MARIADB_GALERA_MARIABACKUP_USER=mariabackup
+        - MARIADB_GALERA_MARIABACKUP_PASSWORD=backup123
+        - MARIADB_ROOT_PASSWORD=root123
+        - MARIADB_REPLICATION_USER=mariareplication
+        - MARIADB_REPLICATION_PASSWORD=replication123
+    healthcheck:
+      test: ['CMD', '/opt/bitnami/scripts/mariadb-galera/healthcheck.sh']
+      interval: 15s
+      timeout: 5s
+      retries: 6
